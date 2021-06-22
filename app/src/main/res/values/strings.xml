@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Quiz</string>
+    <string name="previous">Назад</string>
+    <string name="next">Далее</string>
+    <string name="question">Вопрос</string>
+    <string name="result">Ваш результат: </string>
+    <string name="from">из 5</string>
+</resources>
