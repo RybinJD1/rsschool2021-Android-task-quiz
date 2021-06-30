@@ -7,11 +7,12 @@ import com.rsschool.quiz.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity(), FragmentController {
 
-    private lateinit var binding: ActivityMainBinding
+    private var _binding: ActivityMainBinding? = null
+    private val binding: ActivityMainBinding get() = requireNotNull(_binding)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         open(IntArray(5))
     }

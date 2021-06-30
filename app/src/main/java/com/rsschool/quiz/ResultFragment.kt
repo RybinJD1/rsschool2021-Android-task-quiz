@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import com.rsschool.quiz.databinding.FragmentResultBinding
 import kotlin.system.exitProcess
@@ -13,9 +14,9 @@ import kotlin.system.exitProcess
 class ResultFragment : Fragment() {
 
     private var _binding: FragmentResultBinding? = null
-    private val binding get() = _binding!!
+    private val binding: FragmentResultBinding get() = requireNotNull(_binding)
 
-    private lateinit var controller: FragmentController
+    private var controller: FragmentController? = null
     private val listQuestion = listOfQuestions
 
     override fun onCreateView(
@@ -28,22 +29,20 @@ class ResultFragment : Fragment() {
     }
 
     override fun onAttach(context: Context) {
-        super.onAttach(context);
+        super.onAttach(context)
         controller = context as FragmentController
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         _binding = null
+        super.onDestroyView()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val result = requireNotNull(arguments?.getInt(RESULT))
         val answers = requireNotNull(arguments?.getIntArray(LIST_ANSWER))
-        val res = getString(R.string.result)
-        val from = getString(R.string.from)
-        binding.result.text = "$res $result $from"
+        binding.result.text = getString(R.string.result, result)
 
         binding.share.setOnClickListener {
             val resultIntent = Intent().apply {
@@ -52,13 +51,12 @@ class ResultFragment : Fragment() {
                 putExtra(Intent.EXTRA_SUBJECT, "result")
                 type = "text/plain"
             }
-
             val shareIntent = Intent.createChooser(resultIntent, null)
             startActivity(shareIntent)
         }
 
         binding.anew.setOnClickListener {
-            controller.open(IntArray(5))
+            controller?.open(IntArray(5))
         }
 
         binding.exit.setOnClickListener {
@@ -70,7 +68,7 @@ class ResultFragment : Fragment() {
 
     private fun returnResult(answers: IntArray): String {
         val result = requireNotNull(arguments?.getInt(RESULT))
-        var send = "Результат: $result из 5 "
+        var send = getString(R.string.result, result)
         var count = 0
         var answer = ""
         while (count < 5) {
@@ -81,8 +79,9 @@ class ResultFragment : Fragment() {
                 4 -> answer = listQuestion[count].four
                 5 -> answer = listQuestion[count].five
             }
-            send += "Вопрос №${listQuestion[count].question} \n " +
-                    "Ваш ответ: $answer\n\n"
+            send += getString(R.string.send, listQuestion[count].question, answer)
+//            send += "Вопрос №${listQuestion[count].question} \n " +
+//                    "Ваш ответ: $answer\n\n"
             count++
         }
 
@@ -90,18 +89,15 @@ class ResultFragment : Fragment() {
     }
 
     companion object {
-        @JvmStatic
-        fun newInstance(result: Int, answers: IntArray): ResultFragment {
-            val fragment = ResultFragment()
-            val args = Bundle()
-            args.putInt(RESULT, result)
-            args.putIntArray(LIST_ANSWER, answers)
-            fragment.arguments = args
-            return fragment
-        }
 
         private const val RESULT = "RESULT"
         private const val LIST_ANSWER = "LIST_ANSWER"
+
+        @JvmStatic
+        fun newInstance(result: Int, answers: IntArray): ResultFragment {
+            val args = bundleOf(RESULT to result, LIST_ANSWER to answers)
+            return ResultFragment().apply { arguments = args }
+        }
 
     }
 }

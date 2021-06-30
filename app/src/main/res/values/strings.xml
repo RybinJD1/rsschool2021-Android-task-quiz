@@ -2,7 +2,8 @@
     <string name="app_name">Quiz</string>
     <string name="previous">Назад</string>
     <string name="next">Далее</string>
-    <string name="question">Вопрос</string>
-    <string name="result">Ваш результат: </string>
-    <string name="from">из 5</string>
+    <string name="submit">Готово</string>
+    <string name="question">Вопрос %d</string>
+    <string name="result">Ваш результат: %d из 5</string>
+    <string name="send">Вопрос № %s \n Ваш ответ: %s \n\n</string>
 </resources>
